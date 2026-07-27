@@ -25,7 +25,7 @@ import com.google.cloud.spark.bigtable.fakeserver.{FakeCustomDataService, FakeSe
 import com.google.cloud.spark.bigtable.filters.RowKeyWrapper
 import com.google.common.collect.{Range, RangeSet, TreeRangeSet}
 import com.google.protobuf.ByteString
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.{SQLContext, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
@@ -55,7 +55,7 @@ class BigtableTableScanRDDTest
   override def beforeAll(): Unit = {
     val sparkConf = new SparkConf
     sc = new SparkContext("local", "test", sparkConf)
-    sqlContext = new SQLContext(sc)
+    sqlContext = SparkSession.builder().config(sc.getConf).getOrCreate().sqlContext
   }
 
   override def afterAll(): Unit = {

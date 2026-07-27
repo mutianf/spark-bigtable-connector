@@ -31,9 +31,9 @@
   <version>0.9.1</version> <!-- ${NEXT_VERSION_FLAG} -->
 
   <properties>
-    <scala.version>2.13.14</scala.version>
+    <scala.version>2.13.17</scala.version>
     <scala.binary.version>2.13</scala.binary.version>
-    <spark.version>3.5.1</spark.version>
+    <spark.version>3.5.3</spark.version>
     <re2j.version>1.8</re2j.version>
     <upickle.version>4.2.1</upickle.version>
   </properties>

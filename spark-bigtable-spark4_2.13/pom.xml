@@ -26,16 +26,19 @@
   </parent>
 
   <groupId>com.google.cloud.spark.bigtable</groupId>
-  <artifactId>spark-bigtable_2.12</artifactId>
-  <name>Google Bigtable - Apache Spark Connector</name>
+  <artifactId>spark-bigtable-spark4_2.13</artifactId>
+  <name>Google Bigtable - Apache Spark 4 Connector for Scala 2.13</name>
   <version>0.9.1</version> <!-- ${NEXT_VERSION_FLAG} -->
 
   <properties>
-    <scala.version>2.12.18</scala.version>
-    <scala.binary.version>2.12</scala.binary.version>
-    <spark.version>3.5.3</spark.version>
+    <scala.version>2.13.17</scala.version>
+    <scala.binary.version>2.13</scala.binary.version>
+    <spark.version>4.1.2</spark.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
     <re2j.version>1.8</re2j.version>
     <upickle.version>4.2.1</upickle.version>
+    <hbase.connectors.scala.dir>../third_party/hbase-spark-connector/hbase-connectors-scala2.13/src/main/scala/</hbase.connectors.scala.dir>
   </properties>
 
   <dependencies>
@@ -61,14 +64,7 @@
       <version>${upickle.version}</version>
     </dependency>
 
-    <!-- To fix the "NoClassDefFoundError: com/fasterxml/jackson/core/exc/StreamConstraintsException" error with Spark 3.5-->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>2.15.2</version>
-    </dependency>
-
-    <!-- To fix the "NoClassDefFoundError: scala/util/parsing/json/JSON$" error with Spark 3.4. -->
+    <!-- Needed to compile hbase-connectors code that references scala.util.parsing.json. -->
     <dependency>
       <groupId>org.scala-lang.modules</groupId>
       <artifactId>scala-parser-combinators_${scala.binary.version}</artifactId>
@@ -98,7 +94,6 @@
           <groupId>org.scala-lang</groupId>
           <artifactId>scalap</artifactId>
         </exclusion>
-        <!-- exclude log4j v1 transitive dependencies as we use reload4j instead -->
         <exclusion>
           <groupId>log4j</groupId>
           <artifactId>log4j</artifactId>
@@ -198,17 +193,13 @@
               <sources>
                 <source>../spark-bigtable-core/src/main/scala</source>
                 <source>../spark-bigtable-core/src/test/java</source>
-                <!-- This directory only contains test server infrastructure used in unit/integration
-                      tests, so we specify it as a source. -->
                 <!-- We need to put third-party code inside the `third_party` directory
                       for licensing compliance, including them in the project here. -->
                 <source>../third_party/hbase-spark-connector/hbase-connectors/src/main/scala/</source>
                 <!-- We need to put third-party code inside the `third_party` directory
                       for licensing compliance, including them in the project here.
-                      This is included to get the SchemaConverters class(it has different syntax for scala 2.12)-->
-                <source>
-                  ../third_party/hbase-spark-connector/hbase-connectors-scala2.12/src/main/scala/
-                </source>
+                      This is included to get the SchemaConverters class (scala 2.13 variant). -->
+                <source>${hbase.connectors.scala.dir}</source>
                 <!-- Included for reciprocal license compliance.-->
                 <source>${project.build.directory}/sources</source>
               </sources>

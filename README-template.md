@@ -128,10 +128,11 @@ You need the following depending on the environments you choose to use:
 
 The connector supports the following Spark versions:
 
-| Scala version | Spark versions                    | Spark Application Languages                             |
-|---------------|-----------------------------------|---------------------------------------------------------|
-| 2.13          | 3.1.x, 3.2.x, 3.4.x, 3.5.x        | Java, Scala, PySpark (`.py` files or Jupyter notebooks) |
-| 2.12          | 2.4.8, 3.1.x, 3.2.x, 3.4.x, 3.5.x | Java, Scala, PySpark (`.py` files or Jupyter notebooks) |
+| Scala version | Spark versions                      | Spark Application Languages                             | Notes                                                                           |
+|---------------|-------------------------------------|---------------------------------------------------------|---------------------------------------------------------------------------------|
+| 2.13          | 4.x                                 | Java, Scala, PySpark (`.py` files or Jupyter notebooks) | Requires Java 17; use artifact `spark-bigtable-spark4_2.13`                    |
+| 2.13          | 3.1.x, 3.2.x, 3.4.x, 3.5.x         | Java, Scala, PySpark (`.py` files or Jupyter notebooks) |                                                                                 |
+| 2.12          | 2.4.8, 3.1.x, 3.2.x, 3.4.x, 3.5.x | Java, Scala, PySpark (`.py` files or Jupyter notebooks) |                                                                                 |
 
 ## Main features
 

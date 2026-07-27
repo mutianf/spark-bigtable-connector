@@ -26,7 +26,7 @@ import com.google.protobuf.ByteString
 import org.apache.avro.Schema
 import org.apache.avro.generic.GenericData
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.{DataFrame, SQLContext}
+import org.apache.spark.sql.{DataFrame, SQLContext, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
@@ -80,7 +80,7 @@ class RowFilterLogicTest
             |}
           |}""".stripMargin
 
-    sqlContext = new SQLContext(sc)
+    sqlContext = SparkSession.builder().config(sc.getConf).getOrCreate().sqlContext
 
     df = sqlContext.load(
       "bigtable",

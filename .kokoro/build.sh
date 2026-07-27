@@ -51,7 +51,7 @@ apt install -y google-cloud-sdk-cbt
 
 run_unit_tests() {
     SCALA_VERSION=$1
-    CONNECTOR_MODULE=spark-bigtable_${SCALA_VERSION}
+    CONNECTOR_MODULE=${2:-spark-bigtable_${SCALA_VERSION}}
     echo "***Running connector's unit tests for ${CONNECTOR_MODULE}.***"
     ./mvnw -pl ${CONNECTOR_MODULE} -am  \
         test -B -ntp -Dclirr.skip=true -Denforcer.skip=true -Dcheckstyle.skip
@@ -62,6 +62,7 @@ run_bigtable_spark_tests() {
     SPARK_VERSION=$1
     MAVEN_PROFILES=$2
     SCALA_VERSION=$3
+    CONNECTOR_ARTIFACT=${4:-spark-bigtable_${SCALA_VERSION}}
     echo "***Running Spark-Bigtable tests for Spark ${SPARK_VERSION}, Scala ${SCALA_VERSION} and profile(s) ${MAVEN_PROFILES}.***"
     BIGTABLE_SPARK_IT_MODULE="spark-bigtable-core-it"
     ./mvnw -pl ${BIGTABLE_SPARK_IT_MODULE} \
@@ -70,7 +71,7 @@ run_bigtable_spark_tests() {
         -Dspark.version=${SPARK_VERSION} \
         -DbigtableProjectId=${BIGTABLE_PROJECT_ID} \
         -DbigtableInstanceId=${BIGTABLE_INSTANCE_ID} \
-        -Dconnector.artifact.id=spark-bigtable_${SCALA_VERSION} \
+        -Dconnector.artifact.id=${CONNECTOR_ARTIFACT} \
         -Dscala.binary.version=${SCALA_VERSION} \
         -P ${MAVEN_PROFILES}
     return $?
@@ -326,6 +327,14 @@ load)
 load-2.13)
     run_load_test_serverless
     RETURN_CODE=0
+    ;;
+presubmit-spark4)
+    RETURN_CODE=0
+    export JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS:+$JAVA_TOOL_OPTIONS }--add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/java.lang.invoke=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.io=ALL-UNNAMED --add-opens=java.base/java.net=ALL-UNNAMED --add-opens=java.base/java.nio=ALL-UNNAMED --add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.util.concurrent=ALL-UNNAMED --add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.base/sun.nio.cs=ALL-UNNAMED --add-opens=java.base/sun.security.action=ALL-UNNAMED --add-opens=java.base/sun.util.calendar=ALL-UNNAMED --add-opens=java.security.jgss/sun.security.krb5=ALL-UNNAMED"
+    run_unit_tests "2.13" "spark-bigtable-spark4_2.13"
+    RETURN_CODE=$(($RETURN_CODE || $?))
+    run_bigtable_spark_tests "4.1.2" "integration" "2.13" "spark-bigtable-spark4_2.13"
+    RETURN_CODE=$(($RETURN_CODE || $?))
     ;;
 *)
     ;;

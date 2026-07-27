@@ -19,7 +19,7 @@ package com.google.cloud.spark.bigtable.filters
 import com.google.cloud.spark.bigtable.BigtableRelation
 import com.google.cloud.spark.bigtable.datasources._
 import com.google.common.collect.RangeSet
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.{SQLContext, SparkSession}
 import org.apache.spark.sql.sources.{And, EqualTo, Filter, GreaterThan, GreaterThanOrEqual, LessThan, LessThanOrEqual, Not, Or, StringStartsWith}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.funsuite.AnyFunSuite
@@ -63,7 +63,7 @@ class SparkSqlFilterAdapterTest
   override def beforeAll(): Unit = {
     val sparkConf = new SparkConf
     sc = new SparkContext("local", "test", sparkConf)
-    sqlContext = new SQLContext(sc)
+    sqlContext = SparkSession.builder().config(sc.getConf).getOrCreate().sqlContext
   }
 
   override def afterAll(): Unit = {
